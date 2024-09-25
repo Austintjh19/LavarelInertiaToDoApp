@@ -45,7 +45,7 @@ const HandleDelete = (todo) => {
 
                 <div class="flex items-center justify-between bg-white shadow-md rounded-lg p-6" style="margin-bottom: 30px;">
                     <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-                        My ToDos Index Page
+                        My ToDos
                     </h2>
                 </div>
 
