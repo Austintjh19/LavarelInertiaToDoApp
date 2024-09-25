@@ -4,30 +4,45 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Inertia\Inertia;
-use App\Models\Todo;
+use App\Models\ToDo;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 
 class ToDoController extends Controller
 {
-    public function todos()
+
+    public function index()
     {
-        return Inertia::render('ToDo');
+        $userId = Auth::id();
+
+        $todos = ToDo::with('user:id, name')
+                ->where('user_id', $userId)
+                ->latest()
+                ->get();
+
+        return Inertia::render('ToDo/Index', ['todos' => $todos, 'user_id' => $userId]);
     }
 
     public function store(Request $request)
     {
+        $requestData = json_encode($request->all());
+        echo "<script>console.log('Request: $requestData');</script>";
+
         $request->validate([
             'TaskName' => 'required|string|max:255',
-            'Deadline' => 'nullable|date',
+            'Deadline' => 'required|date',
+            'user_id' => 'required|exists:users,id',
         ]);
 
         ToDo::create([
             'TaskName' => $request->TaskName,
             'Deadline' => $request->Deadline,
+            'user_id' => $request->user_id,
         ]);
 
-        return redirect()->route(route: 'todos')->with('success', 'Todo added successfully!');
+        return redirect()->route('todos');
+        // return response()->json(['message' => 'Todo created successfully!'], 201);
     }
-
 
 
     public function update(Request $request, $id)

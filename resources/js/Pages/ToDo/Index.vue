@@ -1,25 +1,26 @@
 <script setup>
-import { ref } from 'vue';
 import AppLayout from '@/Layouts/AppLayout.vue';
 import { useForm } from '@inertiajs/inertia-vue3';
 
 const props = defineProps({
-    todos: Array
+    todos: Array,
+    user_id: Number
 });
 
-// Create a form for adding todos
-const { data, setData, post, processing, errors } = useForm({
+const form = useForm({
     TaskName: '',
-    Deadline: ''
+    Deadline: '',
+    user_id: props.user_id
 });
 
-// Method to handle form submission
-const submit = () => {
-    post(route('todos.store'), {
+const HandleSubmit = () => {
+    console.log('Task Name:', form.TaskName);
+    console.log('User Id:', props.user_id);
+
+    form.post(route('todos.store'), {
         onSuccess: () => {
-            // Reset the form fields on success
-            data.TaskName = '';
-            data.Deadline = '';
+            form.TaskName = '';
+            form.Deadline = '';
         },
     });
 };
@@ -34,36 +35,34 @@ const submit = () => {
 
                 <div class="flex items-center justify-between bg-white shadow-md rounded-lg p-6" style="margin-bottom: 30px;">
                     <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-                        My ToDos
+                        My ToDos Index Page
                     </h2>
                 </div>
 
                 <div class="bg-white shadow-md rounded-lg p-6">
                     <div>
-                        <form @submit.prevent="submit">
+                        <form @submit.prevent="HandleSubmit">
                             <label for="taskName" class="block mt-4 text-sm font-medium text-gray-700">Task Name:</label>
                             <input
                                 type="text"
                                 id="taskName"
-                                v-model="data.TaskName"
+                                v-model="form.TaskName"
                                 class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
-                                required
                             />
-                            <div class="text-red-600">{{ errors.TaskName }}</div>
+                            <div class="text-red-600" v-if="form.errors.TaskName">{{ form.errors.TaskName }}</div>
 
                             <label for="deadline" class="block mt-4 text-sm font-medium text-gray-700">Deadline:</label>
                             <input
                                 type="date"
                                 id="deadline"
-                                v-model="data.Deadline"
+                                v-model="form.Deadline"
                                 class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
                             />
-                            <div class="text-red-600">{{ errors.Deadline }}</div>
+                            <div class="text-red-600" v-if="form.errors.Deadline">{{ form.errors.Deadline }}</div>
 
                             <button
-                                type="submit"
+                                type="submit" :disabled="form.processing"
                                 class="mt-4 bg-blue-500 text-white font-semibold py-2 px-4 rounded-lg hover:bg-blue-600"
-                                :disabled="processing"
                             >
                                 Add Todo
                             </button>
@@ -73,12 +72,21 @@ const submit = () => {
 
                 <div class="mt-6">
                     <ul>
-                        <li v-for="todo in todos" :key="todo.id" class="py-2">
-                            <span class="font-medium">{{ todo.TaskName }}</span>
-                            <span class="text-gray-500"> - {{ todo.Deadline }}</span>
+                        <li v-for="todo in props.todos" :key="todo.id" class="py-2">
+                            <div class="bg-white shadow-md rounded-lg p-6 flex justify-between items-center">
+                                <div>
+                                    <span class="font-medium">Task: {{ todo.TaskName }}</span>
+                                    <span class="font-medium">, Deadline: {{ todo.Deadline }}</span>
+                                </div>
+                                <div class="flex space-x-2">
+                                    <button class="bg-green-500 text-white font-semibold py-2 px-4 rounded-lg hover:bg-green-600" style="font-size: 14px;">Update</button>
+                                    <button class="bg-red-500 text-white font-semibold py-2 px-4 rounded-lg hover:bg-red-600" style="font-size: 14px;">Delete</button>
+                                </div>
+                            </div>
                         </li>
                     </ul>
                 </div>
+
             </div>
         </div>
 

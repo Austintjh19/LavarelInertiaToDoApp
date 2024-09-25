@@ -9,5 +9,11 @@ class ToDo extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['user_id','TaskName', 'Deadline'];     # Define which attributes can be mass assigned.
+    protected $table = 'todos';
+    protected $fillable = ['user_id','TaskName', 'Deadline'];
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
 }

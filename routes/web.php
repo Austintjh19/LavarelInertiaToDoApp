@@ -23,16 +23,13 @@ Route::middleware([
         return Inertia::render('Dashboard');
     })->name('dashboard');
 
-    // Todos route to display the list of todos
-    Route::get('/todos', [ToDoController::class, 'todos'])->name('todos');
 
-    // Route to store a new todo
+    Route::get('/todos', [ToDoController::class, 'index'])->name('todos');
+
     Route::post('/todos', [ToDoController::class, 'store'])->name('todos.store');
 
-    // Route to update an existing todo
     Route::post('/todos/update/{id}', [ToDoController::class, 'update'])->name('todos.update');
 
-    // Route to delete a todo
     Route::delete('/todos/{id}', [ToDoController::class, 'delete'])->name('todos.delete');
 
 });
