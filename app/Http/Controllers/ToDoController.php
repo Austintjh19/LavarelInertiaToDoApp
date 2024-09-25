@@ -16,9 +16,9 @@ class ToDoController extends Controller
         $userId = Auth::id();
 
         $todos = ToDo::with('user:id, name')
-                ->where('user_id', $userId)
-                ->latest()
-                ->get();
+            ->where('user_id', $userId)
+            ->latest()
+            ->get();
 
         return Inertia::render('ToDo/Index', ['todos' => $todos, 'user_id' => $userId]);
     }
@@ -32,7 +32,7 @@ class ToDoController extends Controller
 
         $request->validate([
             'TaskName' => 'required|string|max:255',
-            'Deadline' => 'nullable|date',
+            'Deadline' => 'required|date',
         ]);
 
         ToDo::create([
@@ -41,32 +41,30 @@ class ToDoController extends Controller
             'user_id' => $request->user_id,
         ]);
 
-        return redirect()->route('todos');
+        return redirect()->route('todos.index');
     }
 
 
-    public function update(Request $request, $id)
+    public function update(Request $request, ToDo $toDo)
     {
 
         $request->validate([
             'TaskName' => 'required|string|max:255',
-            'Deadline' => 'nullable|date',
+            'Deadline' => 'required|date',
         ]);
 
-        $todo = ToDo::findOrFail($id);
-        $todo->update([
+        $toDo->update([
             'TaskName' => $request->TaskName,
             'Deadline' => $request->Deadline,
         ]);
 
-        return redirect()->route('todos');
+        return redirect()->route('todos.index');
     }
 
-    public function delete($id)
+    public function destroy(ToDo $toDo)
     {
-        $todo = ToDo::findOrFail($id);
-        $todo->delete();
+        $toDo->delete();
 
-        return redirect()->route('todos');
+        return redirect()->route('todos.index');
     }
 }

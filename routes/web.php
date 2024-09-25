@@ -24,12 +24,12 @@ Route::middleware([
     })->name('dashboard');
 
 
-    Route::get('/todos', [ToDoController::class, 'index'])->name('todos');
+    Route::get('/todos', [ToDoController::class, 'index'])->name('todos.index');
 
     Route::post('/todos', [ToDoController::class, 'store'])->name('todos.store');
 
-    Route::put('/todos/update/{id}', [ToDoController::class, 'update'])->name('todos.update');
+    Route::put('/todos/update/{toDo}', [ToDoController::class, 'update'])->name('todos.update');
 
-    Route::delete('/todos/{id}', [ToDoController::class, 'delete'])->name('todos.delete');
+    Route::delete('/todos/{toDo}', [ToDoController::class, 'destroy'])->name('todos.destroy');
 
 });
