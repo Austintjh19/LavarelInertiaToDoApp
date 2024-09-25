@@ -28,7 +28,7 @@ Route::middleware([
 
     Route::post('/todos', [ToDoController::class, 'store'])->name('todos.store');
 
-    Route::post('/todos/update/{id}', [ToDoController::class, 'update'])->name('todos.update');
+    Route::put('/todos/update/{id}', [ToDoController::class, 'update'])->name('todos.update');
 
     Route::delete('/todos/{id}', [ToDoController::class, 'delete'])->name('todos.delete');
 

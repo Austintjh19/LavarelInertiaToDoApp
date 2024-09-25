@@ -1,6 +1,7 @@
 <script setup>
 import AppLayout from '@/Layouts/AppLayout.vue';
 import { useForm } from '@inertiajs/inertia-vue3';
+import InputError from '@/Components/InputError.vue';
 import { ref } from 'vue';
 
 const props = defineProps({
@@ -15,10 +16,24 @@ const form = useForm({
 });
 
 const HandleSubmit = () => {
+
+    form.clearErrors();
+
+    if (!form.TaskName) {
+        form.setError('TaskName', 'Task Name is required.');
+    }
+
+    if (!form.Deadline) {
+        form.setError('Deadline', 'Deadline is required.');
+    }
+
+    if (form.errors.TaskName || form.errors.Deadline) {
+        return;
+    }
+
     form.post(route('todos.store'), {
         onSuccess: () => {
-            form.TaskName = '';
-            form.Deadline = '';
+            form.reset();
         },
     });
 };
@@ -47,6 +62,30 @@ const HandleEditButtonClicked = (todo) => {
     updateForm.Deadline = todo.Deadline;
 };
 
+const HandleUpdate = () => {
+
+    updateForm.clearErrors();
+
+    if (!updateForm.TaskName) {
+        updateForm.setError('TaskName', 'Task Name is required.');
+    }
+
+    if (!updateForm.Deadline) {
+        updateForm.setError('Deadline', 'Deadline is required.');
+    }
+
+    if (updateForm.errors.TaskName || updateForm.errors.Deadline) {
+        return;
+    }
+
+    updateForm.put(route('todos.update', { id: todoToEdit.value }), {
+        onSuccess: () => {
+            todoToEdit.value = null;
+            updateForm.reset();
+        },
+    });
+};
+
 </script>
 
 <template>
@@ -71,7 +110,7 @@ const HandleEditButtonClicked = (todo) => {
                                 v-model="form.TaskName"
                                 class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
                             />
-                            <div class="text-red-600" v-if="form.errors.TaskName">{{ form.errors.TaskName }}</div>
+                            <InputError class="mt-2 text-red-600" :message="form.errors.TaskName"/>
 
                             <label for="deadline" class="block mt-4 text-sm font-medium text-gray-700">Deadline:</label>
                             <input
@@ -80,7 +119,7 @@ const HandleEditButtonClicked = (todo) => {
                                 v-model="form.Deadline"
                                 class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
                             />
-                            <div class="text-red-600" v-if="form.errors.Deadline">{{ form.errors.Deadline }}</div>
+                            <InputError class="mt-2 text-red-600" :message="form.errors.Deadline"/>
 
                             <button
                                 type="submit" :disabled="form.processing"
@@ -120,7 +159,7 @@ const HandleEditButtonClicked = (todo) => {
                                 </div>
 
                                 <div v-if="todoToEdit === todo.id" class="mt-4">
-                                    <form @submit.prevent="handleUpdate">
+                                    <form @submit.prevent="HandleUpdate">
                                         <label for="updateTaskName" class="block mt-4 text-sm font-medium text-gray-700">Update Task Name:</label>
                                         <input
                                             type="text"
@@ -128,6 +167,8 @@ const HandleEditButtonClicked = (todo) => {
                                             v-model="updateForm.TaskName"
                                             class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
                                         />
+                                        <InputError class="mt-2 text-red-600" :message="updateForm.errors.TaskName"/>
+
                                         <label for="updateDeadline" class="block mt-4 text-sm font-medium text-gray-700">Update Deadline:</label>
                                         <input
                                             type="date"
@@ -135,6 +176,8 @@ const HandleEditButtonClicked = (todo) => {
                                             v-model="updateForm.Deadline"
                                             class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
                                         />
+                                        <InputError class="mt-2 text-red-600" :message="updateForm.errors.Deadline"/>
+
                                         <button
                                             type="submit" :disabled="form.processing"
                                             class="mt-4 bg-blue-500 text-white font-semibold py-2 px-4 rounded-lg hover:bg-blue-600"

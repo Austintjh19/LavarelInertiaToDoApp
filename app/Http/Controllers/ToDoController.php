@@ -25,14 +25,17 @@ class ToDoController extends Controller
 
     public function store(Request $request)
     {
-        $requestData = json_encode($request->all());
-        echo "<script>console.log('Request: $requestData');</script>";
+        // $requestData = json_encode($request->all());
+        // echo "<script>console.log('Request: $requestData');</script>";
+
+        echo "<script>console.log('Excuted Here');</script>";
 
         $request->validate([
             'TaskName' => 'required|string|max:255',
-            'Deadline' => 'required|date',
-            'user_id' => 'required|exists:users,id',
+            'Deadline' => 'nullable|date',
         ]);
+
+        echo "<script>console.log('Excuted Here 2');</script>";
 
         ToDo::create([
             'TaskName' => $request->TaskName,
@@ -46,6 +49,7 @@ class ToDoController extends Controller
 
     public function update(Request $request, $id)
     {
+
         $request->validate([
             'TaskName' => 'required|string|max:255',
             'Deadline' => 'nullable|date',
@@ -57,7 +61,7 @@ class ToDoController extends Controller
             'Deadline' => $request->Deadline,
         ]);
 
-        return redirect()->route('todos')->with('success', 'Todo updated successfully!');
+        return redirect()->route('todos');
     }
 
     public function delete($id)
