@@ -25,6 +25,16 @@ const HandleSubmit = () => {
     });
 };
 
+const HandleDelete = (todo) => {
+    if (confirm('Confirm Deletion of Task: ' + todo.TaskName)) {
+        form.delete(route('todos.delete', todo.id), {
+            onSuccess: () => {
+                props.todos = props.todos.filter(todo => todo.id !== id);
+            },
+        });
+    }
+};
+
 </script>
 
 <template>
@@ -80,7 +90,7 @@ const HandleSubmit = () => {
                                 </div>
                                 <div class="flex space-x-2">
                                     <button class="bg-green-500 text-white font-semibold py-2 px-4 rounded-lg hover:bg-green-600" style="font-size: 14px;">Update</button>
-                                    <button class="bg-red-500 text-white font-semibold py-2 px-4 rounded-lg hover:bg-red-600" style="font-size: 14px;">Delete</button>
+                                    <button @click="HandleDelete(todo)" class="bg-red-500 text-white font-semibold py-2 px-4 rounded-lg hover:bg-red-600" style="font-size: 14px;">Delete</button>
                                 </div>
                             </div>
                         </li>

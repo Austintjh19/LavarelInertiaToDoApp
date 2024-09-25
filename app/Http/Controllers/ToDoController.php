@@ -41,7 +41,6 @@ class ToDoController extends Controller
         ]);
 
         return redirect()->route('todos');
-        // return response()->json(['message' => 'Todo created successfully!'], 201);
     }
 
 
@@ -66,6 +65,6 @@ class ToDoController extends Controller
         $todo = ToDo::findOrFail($id);
         $todo->delete();
 
-        return redirect()->route('todos')->with('success', 'Todo deleted successfully!');
+        return redirect()->route('todos');
     }
 }
