@@ -28,14 +28,10 @@ class ToDoController extends Controller
         // $requestData = json_encode($request->all());
         // echo "<script>console.log('Request: $requestData');</script>";
 
-        echo "<script>console.log('Excuted Here');</script>";
-
         $request->validate([
             'TaskName' => 'required|string|max:255',
             'Deadline' => 'nullable|date',
         ]);
-
-        echo "<script>console.log('Excuted Here 2');</script>";
 
         ToDo::create([
             'TaskName' => $request->TaskName,
